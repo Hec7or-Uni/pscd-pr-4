@@ -1,0 +1,50 @@
+# macros
+RM = /bin/rm -f  # para limpiar
+CC = g++         # compilador
+#---------------------------------------------------------
+# opciones compilación y enlazado ("linkado")
+CPPFLAGS = -I. -I${LOG_LIB} -I${SEM_LIB} -O2 -std=c++11 -fmax-errors=1 -D LOGGING_MODE # opciones compilación
+LDFLAGS  = -pthread  # opciones de "linkado"
+#---------------------------------------------------------
+# vars
+EJEC = practica_4_opc_2
+CLASE = MonitorTren
+#---------------------------------------------------------
+# directorio y clase para semáforos
+SEM_LIB=./librerias/Semaphore_V4
+SEMAPHORE=${SEM_LIB}/Semaphore_V4
+#---------------------------------------------------------
+#directorio y clase para manejo de logs de Semaphore_V4
+LOG_LIB=./librerias/Logger_V3
+LOGGER=${LOG_LIB}/Logger
+#---------------------------------------------------------
+#directorio y clase para manejo de logs de practica_4
+LOG_LIB=./librerias/Logger_V3
+LOGGER=${LOG_LIB}/Logger
+
+all: ${EJEC} 
+#---------------------------------------------------------
+# "linkar"
+${EJEC}: ${EJEC}.o ${CLASE}.o ${SEMAPHORE}.o ${LOGGER}.o
+	${CC} ${EJEC}.o ${CLASE}.o ${SEMAPHORE}.o ${LOGGER}.o -o practica_4 ${CPPFLAGS} ${LDFLAGS}
+
+#---------------------------------------------------------
+# compilar
+${EJEC}.o: ${EJEC}.cpp 
+	${CC} -c ${EJEC}.cpp ${CPPFLAGS}
+
+${SEMAPHORE}.o: ${SEMAPHORE}.hpp ${SEMAPHORE}.cpp
+	${CC} -c ${SEMAPHORE}.cpp -o ${SEMAPHORE}.o ${CPPFLAGS}
+
+${CLASE}.o: ${CLASE}.hpp ${CLASE}.cpp
+	${CC} -c ${CLASE}.cpp -o ${CLASE}.o ${CPPFLAGS}
+
+${LOGGER}.o: ${LOGGER}.hpp ${LOGGER}.cpp
+	${CC} -c ${LOGGER}.cpp -o ${LOGGER}.o ${CPPFLAGS}
+
+#---------------------------------------------------------
+
+clean:
+	$(RM) ${LOGGER}.o ${SEMAPHORE}.o ${EJEC}.o ${EJEC} ${CLASE}.o
+	$(RM) _log_.log
+
